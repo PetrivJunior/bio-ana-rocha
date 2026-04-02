@@ -257,6 +257,35 @@
       updateCarousel();
     });
 
+    // Auto-play carousel (mobile only)
+    let autoPlayTimer = null;
+    let userInteracting = false;
+
+    function autoAdvance() {
+      if (window.innerWidth >= 768) return;
+      const nextIndex = (currentIndex + 1) % cards.length;
+      cards[nextIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }
+
+    function startAutoPlay() {
+      stopAutoPlay();
+      autoPlayTimer = setInterval(autoAdvance, 3000);
+    }
+
+    function stopAutoPlay() {
+      if (autoPlayTimer) { clearInterval(autoPlayTimer); autoPlayTimer = null; }
+    }
+
+    function resetAutoPlay() {
+      stopAutoPlay();
+      startAutoPlay();
+    }
+
+    carousel.addEventListener('touchstart', () => { userInteracting = true; stopAutoPlay(); }, { passive: true });
+    carousel.addEventListener('touchend', () => { userInteracting = false; setTimeout(resetAutoPlay, 3000); }, { passive: true });
+    carousel.addEventListener('mousedown', () => { userInteracting = true; stopAutoPlay(); });
+    carousel.addEventListener('mouseup', () => { userInteracting = false; setTimeout(resetAutoPlay, 3000); });
+
     // Initial setup
     requestAnimationFrame(() => {
       if (window.innerWidth < 768) {
@@ -265,6 +294,7 @@
         carousel.style.paddingRight = pad + 'px';
       }
       updateCarousel();
+      startAutoPlay();
     });
   </script>
 </body>
