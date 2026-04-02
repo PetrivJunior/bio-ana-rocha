@@ -257,9 +257,8 @@
       updateCarousel();
     });
 
-    // Auto-play carousel (mobile only)
+    // Auto-play carousel (mobile only) — stops permanently on user interaction
     let autoPlayTimer = null;
-    let userInteracting = false;
 
     function autoAdvance() {
       if (window.innerWidth >= 768) return;
@@ -268,23 +267,17 @@
     }
 
     function startAutoPlay() {
-      stopAutoPlay();
       autoPlayTimer = setInterval(autoAdvance, 3000);
     }
 
-    function stopAutoPlay() {
+    function stopAutoPlayForever() {
       if (autoPlayTimer) { clearInterval(autoPlayTimer); autoPlayTimer = null; }
+      carousel.removeEventListener('touchstart', stopAutoPlayForever);
+      carousel.removeEventListener('mousedown', stopAutoPlayForever);
     }
 
-    function resetAutoPlay() {
-      stopAutoPlay();
-      startAutoPlay();
-    }
-
-    carousel.addEventListener('touchstart', () => { userInteracting = true; stopAutoPlay(); }, { passive: true });
-    carousel.addEventListener('touchend', () => { userInteracting = false; setTimeout(resetAutoPlay, 3000); }, { passive: true });
-    carousel.addEventListener('mousedown', () => { userInteracting = true; stopAutoPlay(); });
-    carousel.addEventListener('mouseup', () => { userInteracting = false; setTimeout(resetAutoPlay, 3000); });
+    carousel.addEventListener('touchstart', stopAutoPlayForever, { passive: true });
+    carousel.addEventListener('mousedown', stopAutoPlayForever);
 
     // Initial setup
     requestAnimationFrame(() => {
