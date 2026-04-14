@@ -290,5 +290,28 @@
       startAutoPlay();
     });
   </script>
+  <script>
+    // Captura UTMs da URL da página e injeta nos links dos botões "Saiba Mais"
+    (function() {
+      const params = new URLSearchParams(window.location.search);
+      const utmSource = params.get('utm_source');
+      const utmMedium = params.get('utm_medium');
+      const utmCampaign = params.get('utm_campaign');
+      const utmContent = params.get('utm_content');
+      const utmTerm = params.get('utm_term');
+
+      if (!utmSource) return; // Sem UTM na URL, mantém os links originais
+
+      document.querySelectorAll('a[href*="lightforms"]').forEach(link => {
+        const url = new URL(link.href);
+        if (utmSource) url.searchParams.set('utm_source', utmSource);
+        if (utmMedium) url.searchParams.set('utm_medium', utmMedium);
+        if (utmCampaign) url.searchParams.set('utm_campaign', utmCampaign);
+        if (utmContent) url.searchParams.set('utm_content', utmContent);
+        if (utmTerm) url.searchParams.set('utm_term', utmTerm);
+        link.href = url.toString();
+      });
+    })();
+  </script>
 </body>
 </html>
