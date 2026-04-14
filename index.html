@@ -119,7 +119,7 @@
 
     <div class="carousel-wrapper">
       <section class="cards" id="cardsCarousel">
-        <a href="https://app.lightforms.io/qIFqyjp?utm_source=bioinsta&utm_medium=cardFCA" target="_blank" class="card">
+        <a href="https://app.lightforms.io/qIFqyjp" target="_blank" class="card" data-product="FCA">
           <img src="assets/fca_banner.jpg" alt="Formação Carreira Acelerada" class="card-image">
           <div class="card-body">
             <h2 class="card-title"><span>FORMAÇÃO</span> CARREIRA ACELERADA</h2>
@@ -127,7 +127,7 @@
             <span class="card-btn btn-carreira">Saiba mais <svg viewBox="0 0 10 10" fill="none"><path d="M1 9L9 1M9 1H2M9 1V8" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           </div>
         </a>
-        <a href="https://app.lightforms.io/qIFqyjp?utm_source=instabio&utm_medium=cardFDL" target="_blank" class="card">
+        <a href="https://app.lightforms.io/qIFqyjp" target="_blank" class="card" data-product="FDL">
           <img src="assets/fdl_banner.jpg" alt="Formação Liderança OSA" class="card-image">
           <div class="card-body">
             <h2 class="card-title"><span>FORMAÇÃO</span> LIDERANÇA OSA</h2>
@@ -135,7 +135,7 @@
             <span class="card-btn btn-lideranca">Saiba mais <svg viewBox="0 0 10 10" fill="none"><path d="M1 9L9 1M9 1H2M9 1V8" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
           </div>
         </a>
-        <a href="https://app.lightforms.io/qIFqyjp?utm_source=bioinsta&utm_medium=cardneraclub&utm_campaign=neraclub" target="_blank" class="card">
+        <a href="https://app.lightforms.io/qIFqyjp" target="_blank" class="card" data-product="NERA_CLUB">
           <img src="assets/nera_club_banner.jpg" alt="NERA Club" class="card-image">
           <div class="card-body">
             <h2 class="card-title">NERA CLUB</h2>
@@ -300,14 +300,16 @@
       const utmContent = params.get('utm_content');
       const utmTerm = params.get('utm_term');
 
-      if (!utmSource) return; // Sem UTM na URL, mantém os links originais
+      if (!utmSource) return;
 
       document.querySelectorAll('a[href*="lightforms"]').forEach(link => {
         const url = new URL(link.href);
-        if (utmSource) url.searchParams.set('utm_source', utmSource);
+        url.searchParams.set('utm_source', utmSource);
         if (utmMedium) url.searchParams.set('utm_medium', utmMedium);
         if (utmCampaign) url.searchParams.set('utm_campaign', utmCampaign);
-        if (utmContent) url.searchParams.set('utm_content', utmContent);
+        // utm_content: usa o da URL ou o produto do card
+        const product = link.getAttribute('data-product');
+        url.searchParams.set('utm_content', utmContent || product || '');
         if (utmTerm) url.searchParams.set('utm_term', utmTerm);
         link.href = url.toString();
       });
